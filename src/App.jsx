@@ -3,6 +3,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import codeStyle from 'react-syntax-highlighter/src/styles/hljs/docco.js';
 import PanelHeader from './components/panel/header/PanelHeader';
 
+const TAB_SIZE = 4;
+
 export default function App() {
   const [slides, setSlides] = useState([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -71,33 +73,23 @@ export default function App() {
           chapter: currentChapter,
           title: currentSubchapter
         });
-      } else if (line.startsWith('- ')) {
-        const processedText = processText(line.substring(2).trim());
-        currentItems.push({
+
+      } else if (line.trim().startsWith('-')) {
+        const spaces = line.split('-')[0];
+        const level = spaces.includes(" ") ? spaces.length / TAB_SIZE : 0;
+
+        const currentItem = {
           type: 'text',
-          content: processedText,
+          content: processText(line.substring(2).trim()),
           children: []
-        });
-      } else if (line.startsWith('    -') || line.startsWith(' -')) {
-        const processedText = processText(line.substring(2).trim());
+        };
 
-        const parentItem = currentItems[currentItems.length - 1];
-
-        parentItem.children.push({
-          type: 'text',
-          content: processedText,
-          children: []
-        });
-      } else if (line.startsWith('        -') || line.startsWith('  -')) {
-        const processedText = processText(line.substring(2).trim());
-
-        const parentItem = currentItems[currentItems.length - 1];
-        const currentParent = parentItem.children[parentItem.children.length - 1];
-
-        currentParent.children.push({
-          type: 'text',
-          content: processedText
-        });
+        if (level === 0) {
+          currentItems.push(currentItem);
+        } else {
+          const parent = extractParent(currentItems, level);
+          parent.children.push(currentItem);
+        }
       } else if (line.includes('![') && line.includes('](') && line.includes(')')) {
         addItemsSlide();
 
@@ -143,6 +135,16 @@ export default function App() {
     return presentationSlides;
   };
 
+  const extractParent = (currentItems, level) => {
+    let currentParent = currentItems[currentItems.length - 1];
+
+    for (let idx = 1; idx < level; idx++) {
+      currentParent = currentParent.children[currentParent.children.length - 1];
+    }
+
+    return currentParent;
+  }
+
   const computeRecursiveContent = (item, index) => {
     if (!item.children || item.children.length === 0) {
       return null;
@@ -150,21 +152,24 @@ export default function App() {
 
     const renderNestedItem = (nestedItem, nestedIndex, depth = 0) => {
       const marginClass = `mx-${8 * (depth + 1)}`;
+      console.log(marginClass);
 
       return (
-        <div key={`${nestedIndex}`}>
+        <div key={`${nestedIndex}`} className={marginClass}>
           <div
             className={marginClass}
             dangerouslySetInnerHTML={{ __html: nestedItem.content }}
           />
-          {nestedItem.children && nestedItem.children.length > 0 && (
-            <div key={`${nestedIndex}-children`}>
-              {nestedItem.children.map((childItem, childIndex) =>
-                renderNestedItem(childItem, `${nestedIndex}-${childIndex}`, depth + 1)
-              )}
-            </div>
-          )}
-        </div>
+          {
+            nestedItem.children && nestedItem.children.length > 0 && (
+              <div key={`${nestedIndex}-children`}>
+                {nestedItem.children.map((childItem, childIndex) =>
+                  renderNestedItem(childItem, `${nestedIndex}-${childIndex}`, depth + 1)
+                )}
+              </div>
+            )
+          }
+        </div >
       );
     };
 

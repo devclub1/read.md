@@ -1,3 +1,3 @@
-# presenter
+# read.md
 
-An app that transforms markdowns into clean & simple presentations
+An app that transforms your boring markdown files into clean & simple presentations

@@ -87,7 +87,7 @@ export default function App() {
         if (level === 0) {
           currentItems.push(currentItem);
         } else {
-          const parent = extractParent(currentItems, level);
+          const parent = extractParentItem(currentItems, level);
           parent.children.push(currentItem);
         }
       } else if (line.includes('![') && line.includes('](') && line.includes(')')) {
@@ -135,7 +135,7 @@ export default function App() {
     return presentationSlides;
   };
 
-  const extractParent = (currentItems, level) => {
+  const extractParentItem = (currentItems, level) => {
     let currentParent = currentItems[currentItems.length - 1];
 
     for (let idx = 1; idx < level; idx++) {
@@ -438,7 +438,14 @@ export default function App() {
               </div>
             </>
           ) : (
-            <span className="text-center w-full">Upload a markdown file to begin</span>
+            <div className="mx-auto text-center text-sm group">
+              <div className="relative inline-block">
+                <span className="transition-opacity duration-1000 group-hover:opacity-0">//</span>
+                <div className="absolute bottom-0 -translate-x-1/2 whitespace-nowrap cursor-default opacity-0 transition-opacity duration-1000 group-hover:opacity-100">
+                  <a href="https://github.com/devclub1" target="_blank">developed // devclub1</a>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

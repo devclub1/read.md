@@ -75,6 +75,27 @@ export default function App() {
         const processedText = processText(line.substring(2).trim());
         currentItems.push({
           type: 'text',
+          content: processedText,
+          children: []
+        });
+      } else if (line.startsWith('    -') || line.startsWith(' -')) {
+        const processedText = processText(line.substring(2).trim());
+
+        const parentItem = currentItems[currentItems.length - 1];
+
+        parentItem.children.push({
+          type: 'text',
+          content: processedText,
+          children: []
+        });
+      } else if (line.startsWith('        -') || line.startsWith('  -')) {
+        const processedText = processText(line.substring(2).trim());
+
+        const parentItem = currentItems[currentItems.length - 1];
+        const currentParent = parentItem.children[parentItem.children.length - 1];
+
+        currentParent.children.push({
+          type: 'text',
           content: processedText
         });
       } else if (line.includes('![') && line.includes('](') && line.includes(')')) {
@@ -120,6 +141,40 @@ export default function App() {
     addItemsSlide();
 
     return presentationSlides;
+  };
+
+  const computeRecursiveContent = (item, index) => {
+    if (!item.children || item.children.length === 0) {
+      return null;
+    }
+
+    const renderNestedItem = (nestedItem, nestedIndex, depth = 0) => {
+      const marginClass = `mx-${8 * (depth + 1)}`;
+
+      return (
+        <div key={`${nestedIndex}`}>
+          <div
+            className={marginClass}
+            dangerouslySetInnerHTML={{ __html: nestedItem.content }}
+          />
+          {nestedItem.children && nestedItem.children.length > 0 && (
+            <div key={`${nestedIndex}-children`}>
+              {nestedItem.children.map((childItem, childIndex) =>
+                renderNestedItem(childItem, `${nestedIndex}-${childIndex}`, depth + 1)
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    return (
+      <div>
+        {item.children.map((childItem, childIndex) =>
+          renderNestedItem(childItem, `${index}-${childIndex}`)
+        )}
+      </div>
+    );
   };
 
   const handleFileUpload = (event) => {
@@ -287,16 +342,17 @@ export default function App() {
                 const itemPosition = slide.items.length > 2 ? 'mt-12' : '';
 
                 return (
-                  <div
-                    key={index}
-                    className={`text-center transition-opacity ${isVisible ? 'duration-500 opacity-100' : 'duration-0 opacity-0'} ${itemPosition}`}
-                    dangerouslySetInnerHTML={{ __html: item.content }}
-                  />
+                  <div key={index}
+                    className={`trasition-opacity ${isVisible ? 'duration-500 opacity-100' : 'duration-0 opacity-0'} ${itemPosition}`}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                    {computeRecursiveContent(item, index, isVisible, itemPosition)}
+                  </div>
                 );
               })}
             </div>
           </div>
-        </div>
+        </div >
       );
     }
 
@@ -340,7 +396,7 @@ export default function App() {
       {!fileUploaded && (
         <div className="bg-blue-600 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Markdown Presentation App</h1>
+            <h1 className="text-2xl font-bold">read.md</h1>
           </div>
         </div>
       )}

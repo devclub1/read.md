@@ -151,13 +151,10 @@ export default function App() {
     }
 
     const renderNestedItem = (nestedItem, nestedIndex, depth = 0) => {
-      const marginClass = `mx-${8 * (depth + 1)}`;
-      console.log(marginClass);
-
       return (
-        <div key={`${nestedIndex}`} className={marginClass}>
+        <div key={`${nestedIndex}`}>
           <div
-            className={marginClass}
+            style={{ marginLeft: 1.5 * (depth + 1) + 'rem' }}
             dangerouslySetInnerHTML={{ __html: nestedItem.content }}
           />
           {

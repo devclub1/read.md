@@ -441,20 +441,20 @@ export default function App() {
                 {showImageFullScreenButton && (
                   <button
                     onClick={toggleImageFullScreen}
-                    className="bg-blue-600 text-white px-4 py-1 rounded"
+                    className="bg-blue-600 text-white px-4 py-1 rounded cursor-pointer"
                   >
                     {isImageFullScreen ? 'Exit Image Fullscreen' : 'Image Fullscreen'}
                   </button>
                 )}
                 <button
                   onClick={toggleFullScreen}
-                  className="bg-blue-600 text-white px-4 py-1 rounded"
+                  className="bg-blue-600 text-white px-4 py-1 rounded cursor-pointer"
                 >
                   {isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
                 </button>
                 <button
                   onClick={handleReset}
-                  className="bg-blue-600 text-white px-4 py-1 rounded"
+                  className="bg-blue-600 text-white px-4 py-1 rounded cursor-pointer"
                 >
                   Reset
                 </button>

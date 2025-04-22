@@ -14,7 +14,7 @@ export default function App() {
   const [isImageFullScreen, setIsImageFullScreen] = useState(false);
 
   const parseMarkdown = (markdown) => {
-    const lines = markdown.split('\n').filter(line => line.trim() !== '');
+    const lines = markdown.split('\n');
     const presentationSlides = [];
 
     let currentChapter = null;
@@ -55,7 +55,16 @@ export default function App() {
     for (let idx = 0; idx < lines.length; idx++) {
       let line = lines[idx];
 
-      if (line.startsWith('## ')) {
+      if (line.trim() === "") {
+        continue;
+      }
+
+      if (line.startsWith('# ')) {
+        presentationSlides.push({
+          type: 'title',
+          title: line.substring(2).trim()
+        });
+      } else if (line.startsWith('## ')) {
         addItemsSlide();
 
         currentChapter = line.substring(3).trim();
@@ -118,17 +127,24 @@ export default function App() {
           codeBlock.push(line);
         } while (!line.startsWith("```"))
 
+
+        const header = codeBlock.shift().substring(3);
+        const title = codeBlock[0].startsWith("title:") ? codeBlock.shift().substring(6) : '';
+
         codeBlock.pop();
 
         presentationSlides.push({
           type: 'code',
           chapter: currentChapter,
           subchapter: currentSubchapter,
-          header: codeBlock.shift().substring(3),
+          header: header,
+          title: title,
           items: [...codeBlock],
         });
       }
     }
+
+    console.log(presentationSlides);
 
     addItemsSlide();
 
@@ -260,7 +276,13 @@ export default function App() {
 
     const slide = slides[currentSlideIndex];
 
-    if (slide.type === 'chapter') {
+    if (slide.type === 'title') {
+      return (
+        <div className="flex items-center justify-center h-full text-center">
+          <h1 className="text-6xl font-bold">{slide.title}</h1>
+        </div>
+      );
+    } else if (slide.type === 'chapter') {
       return (
         <div className="flex items-center justify-center h-full text-center">
           <h1 className="text-4xl font-bold">{slide.title}</h1>
@@ -329,6 +351,7 @@ export default function App() {
             >
               {slide.items.join("\n")}
             </SyntaxHighlighter>
+            {slide.title && <p>{slide.title}</p>}
           </div>
         </div>
       )

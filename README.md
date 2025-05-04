@@ -26,3 +26,12 @@ Obtaining a proper production-ready build is as easy as:
 npm run build
 ```
 
+An optional feature to download the content of a markdown file directly from the web is available only if a cors-dumper server is available too
+
+To enable this feature, create a .env file in the root directory and populate it as:
+```
+VITE_CORS_DUMPER_URL=http://your-cors-dumper?url=
+```
+
+I published cors-dumper implementation [here](https://codeberg.org/axbg/cors-dumper)
+

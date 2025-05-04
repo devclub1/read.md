@@ -6,7 +6,10 @@ import PanelHeader from './components/panel/header/PanelHeader';
 const TAB_SIZE = 4;
 
 export default function App() {
+  const CORS_DUMPER_URL = import.meta.env.VITE_CORS_DUMPER_URL;
+
   const [slides, setSlides] = useState([]);
+  const [mdUrl, setMdUrl] = useState("");
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const [fileUploaded, setFileUploaded] = useState(false);
@@ -195,21 +198,34 @@ export default function App() {
     );
   };
 
+  const initializePresentation = (content) => {
+    const parsedSlides = parseMarkdown(content);
+    setSlides(parsedSlides);
+    setCurrentSlideIndex(0);
+    setCurrentItemIndex(0);
+    setFileUploaded(true);
+  }
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const content = e.target.result;
-        const parsedSlides = parseMarkdown(content);
-        setSlides(parsedSlides);
-        setCurrentSlideIndex(0);
-        setCurrentItemIndex(0);
-        setFileUploaded(true);
+        initializePresentation(e.target.result);
       };
       reader.readAsText(file);
     }
   };
+
+  const downloadMarkdown = () => {
+    if (!mdUrl.startsWith("http") || !mdUrl.endsWith(".md")) {
+      alert("Invalid URL");
+    }
+
+    fetch(CORS_DUMPER_URL + mdUrl)
+      .then(response => response.json())
+      .then(body => initializePresentation(body.data))
+  }
 
   const handleNext = useCallback(() => {
     const currentSlide = slides[currentSlideIndex];
@@ -263,13 +279,23 @@ export default function App() {
   const renderCurrentSlide = () => {
     if (slides.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center h-full text-center p-4">
-          <p className="text-xl mb-8">Please upload a markdown file to start the presentation</p>
+        <div className="flex flex-col items-center justify-center h-full text-center">
+          <p className="text-xl mb-8">to start the presentation</p>
+          <p className="text-l">upload a markdown file: </p>
           <input
             type="file"
             accept=".md"
             onChange={handleFileUpload}
             className="border border-gray-300 rounded-md focus:outline-none bg-gray-50 cursor-pointer" />
+
+          {CORS_DUMPER_URL && <div className="flex flex-col items-center justify-center">
+            <p className="text-l mt-16">or paste a link to a valid markdown file: </p>
+            <input type="text"
+              onChange={(e) => setMdUrl(e.target.value)}
+              className="border border-gray-300 focus:outline-none bg-gray-50 cursor-pointer"
+            />
+            <button className="mt-2 bg-gray-800 text-white p-2 rounded-full" onClick={downloadMarkdown}>Download markdown</button>
+          </div>}
         </div>
       );
     }

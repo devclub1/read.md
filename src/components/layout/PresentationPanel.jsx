@@ -4,34 +4,27 @@ import SubchapterSlide from '../slides/SubchapterSlide';
 import ImageSlide from '../slides/ImageSlide';
 import CodeSlide from '../slides/CodeSlide';
 import ItemsSlide from '../slides/ItemsSlide';
-import LandingPage from './LandingPage';
 
-const MainPanel = ({
+const PresentationPanel = ({
   slides,
   currentSlideIndex,
   currentItemIndex,
-  fileUploaded,
   isImageFullScreen,
   toggleImageFullScreen,
-  handleFileUpload,
-  setMdUrl,
-  downloadMarkdown,
-  CORS_DUMPER_URL,
-  computeRecursiveContent
+  handleReset,
 }) => {
-  if (!fileUploaded) {
-    return (
-      <LandingPage
-        handleFileUpload={handleFileUpload}
-        setMdUrl={setMdUrl}
-        downloadMarkdown={downloadMarkdown}
-        CORS_DUMPER_URL={CORS_DUMPER_URL}
-      />
-    );
-  }
-
   if (slides.length === 0) {
-    return null;
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <p className="text-xl mb-8">The uploaded markdown is empty</p>
+        <button
+          onClick={handleReset}
+          className="bg-blue-600 text-white px-4 py-1 rounded cursor-pointer"
+        >
+          Reset
+        </button>
+      </div>
+    );
   }
 
   const slide = slides[currentSlideIndex];
@@ -71,7 +64,6 @@ const MainPanel = ({
           subchapter={slide.subchapter}
           items={slide.items}
           currentItemIndex={currentItemIndex}
-          computeRecursiveContent={computeRecursiveContent}
         />
       );
     default:
@@ -79,4 +71,4 @@ const MainPanel = ({
   }
 };
 
-export default MainPanel; 
+export default PresentationPanel; 

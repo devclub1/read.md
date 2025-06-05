@@ -2,7 +2,7 @@ const Footer = ({ fileUploaded, currentSlideIndex, slides, showImageFullScreenBu
   return (
     <div className="bg-gray-200 p-4">
       <div className="container mx-auto flex justify-between items-center">
-        {fileUploaded ? (
+        {fileUploaded && slides.length > 0 ? (
           <>
             <span>Slide {currentSlideIndex + 1} of {slides.length}</span>
             <div className="flex space-x-2">

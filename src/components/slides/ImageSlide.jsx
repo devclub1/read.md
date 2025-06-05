@@ -1,4 +1,4 @@
-import PanelHeader from '../layout/PanelHeader';
+import PresentationHeader from '../layout/PresentationHeader';
 
 const ImageSlide = ({ chapter, subchapter, title, url, isImageFullScreen, toggleImageFullScreen }) => {
   if (isImageFullScreen) {
@@ -22,7 +22,7 @@ const ImageSlide = ({ chapter, subchapter, title, url, isImageFullScreen, toggle
 
   return (
     <div className="relative h-full">
-      <PanelHeader chapter={chapter} subchapter={subchapter} />
+      <PresentationHeader chapter={chapter} subchapter={subchapter} />
 
       <div className="flex items-center justify-center h-full p-8">
         <div className="text-center max-w-4xl">

@@ -1,4 +1,4 @@
-const PanelHeader = ({ chapter, subchapter }) => {
+const PresentationHeader = ({ chapter, subchapter }) => {
   return (
     <div className="absolute top-2 left-2">
       {chapter && (
@@ -11,4 +11,4 @@ const PanelHeader = ({ chapter, subchapter }) => {
   );
 }
 
-export default PanelHeader;
+export default PresentationHeader;

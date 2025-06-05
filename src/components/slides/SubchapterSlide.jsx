@@ -1,9 +1,9 @@
-import PanelHeader from '../layout/PanelHeader';
+import PresentationHeader from '../layout/PresentationHeader';
 
 const SubchapterSlide = ({ chapter, title }) => {
   return (
     <div className="relative h-full">
-      <PanelHeader chapter={chapter} />
+      <PresentationHeader chapter={chapter} />
 
       <div className="flex items-center justify-center h-full text-center">
         <h2 className="text-3xl font-bold">{title}</h2>

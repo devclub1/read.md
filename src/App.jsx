@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { parseMarkdown } from './functions/markdownParser';
-import { computeRecursiveContent } from './functions/contentRenderer';
+import { parseMarkdown } from './functions/parsers/markdownParser';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import MainPanel from './components/layout/MainPanel';
+import PresentationPanel from './components/layout/PresentationPanel';
+import UploadPanel from './components/layout/UploadPanel';
 
 export default function App() {
   const CORS_DUMPER_URL = import.meta.env.VITE_CORS_DUMPER_URL;
@@ -83,7 +83,7 @@ export default function App() {
       document.documentElement.requestFullscreen().catch(err => {
         console.error(`Error attempting to enable full-screen mode: ${err.message}`);
       });
-      
+
       setIsFullScreen(true);
     } else {
       if (document.exitFullscreen) {
@@ -135,23 +135,27 @@ export default function App() {
 
       <div className="flex-1 overflow-hidden relative">
         <div className="relative h-full">
-          <MainPanel 
-            slides={slides}
-            currentSlideIndex={currentSlideIndex}
-            currentItemIndex={currentItemIndex}
-            fileUploaded={fileUploaded}
-            isImageFullScreen={isImageFullScreen}
-            toggleImageFullScreen={toggleImageFullScreen}
-            handleFileUpload={handleFileUpload}
-            setMdUrl={setMdUrl}
-            downloadMarkdown={downloadMarkdown}
-            CORS_DUMPER_URL={CORS_DUMPER_URL}
-            computeRecursiveContent={computeRecursiveContent}
-          />
+          {!fileUploaded ?
+            <UploadPanel
+              handleFileUpload={handleFileUpload}
+              setMdUrl={setMdUrl}
+              downloadMarkdown={downloadMarkdown}
+              CORS_DUMPER_URL={CORS_DUMPER_URL}
+            /> :
+            <PresentationPanel
+              slides={slides}
+              currentSlideIndex={currentSlideIndex}
+              currentItemIndex={currentItemIndex}
+              fileUploaded={fileUploaded}
+              isImageFullScreen={isImageFullScreen}
+              toggleImageFullScreen={toggleImageFullScreen}
+              handleReset={handleReset}
+            />
+          }
         </div>
       </div>
 
-      <Footer 
+      <Footer
         fileUploaded={fileUploaded}
         currentSlideIndex={currentSlideIndex}
         slides={slides}

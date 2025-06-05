@@ -1,9 +1,10 @@
-import PanelHeader from '../layout/PanelHeader';
+import PresentationHeader from '../layout/PresentationHeader';
+import { computeRecursiveContent } from '../../functions/contentRenderer';
 
-const ItemsSlide = ({ chapter, subchapter, items, currentItemIndex, computeRecursiveContent }) => {
+const ItemsSlide = ({ chapter, subchapter, items, currentItemIndex }) => {
   return (
     <div className="relative h-full">
-      <PanelHeader chapter={chapter} subchapter={subchapter} />
+      <PresentationHeader chapter={chapter} subchapter={subchapter} />
 
       <div className="flex flex-col items-center justify-center h-full">
         <div className="space-y-8 text-xl max-w-2xl">

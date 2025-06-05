@@ -1,5 +1,4 @@
 const PanelHeader = ({ chapter, subchapter }) => {
-
   return (
     <div className="absolute top-2 left-2">
       {chapter && (
